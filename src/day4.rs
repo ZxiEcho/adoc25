@@ -114,6 +114,7 @@ fn day4_helper(map:&mut Vec<Vec<Paper>>) -> i32{
     for i in 0..map.len(){
         let mut counter = 0;
         for j in 0..map[i].len(){
+            print!("{:?}", j);
             let item = collec_item(i as isize, j as isize, &map);
             let neighbours = find_neighbiurs(i,j, &map);
             match item {
