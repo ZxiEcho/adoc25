@@ -31,7 +31,7 @@ pub fn day5_p1() -> i32{
 }
 
 pub fn day5_p2() -> i64{
-    let file = fs::read_to_string("test.txt").expect("kass");
+    let file = fs::read_to_string("day5.txt").expect("kass");
 
     let both_input = file.split("\n\n").collect::<Vec<_>>();
     let lines:Vec<&str> = both_input[0].lines().collect();
@@ -53,41 +53,56 @@ pub fn day5_p2() -> i64{
             add_to_vector(&mut fresh_food, first, last, &mut indexes);
         }
         for j in 0..indexes.len(){
+            //println!("{:?} {:?} {:?}", j, fresh_food, indexes);
             fresh_food.remove(indexes[j]);
+            
+            
+            for k in 0..indexes.len(){
+                if indexes[k] > j{
+                    indexes[k] -= 1;
+                }
+            }
         }
 
     }
 
+    let mut return_value:i64 = 0;
+    for (i, j) in &fresh_food{
+        return_value += j - i + 1;
+    }
+
     println!("{:?}", fresh_food);
 
-    let return_value = fresh_food.len();
 
     return return_value as i64;
 }
 
 fn add_to_vector(fresh_food: &mut Vec<(i64, i64)>, first: i64, last: i64, indexes: &mut Vec<usize>){
     let mut added = true;
-    
 
     for j in 0..fresh_food.len(){
-        println!("{:?} {:?}", j, fresh_food);
-        let (mut start, mut end) = fresh_food[j];
         added = true;
-        if first < end && first > start && last >= end{
+        let (mut start, mut end) = fresh_food[j];
+        if first < end && first > start && last > end{
             end = last;
+            //println!("{} {:?}", j, fresh_food);
             indexes.push(j);
             add_to_vector(fresh_food, start, end, indexes);
+            break;
         }
-        else if last < end && last > start && first <= start{
+        else if last < end && last > start && first < start{
             start = first;
+            //println!("{} {:?}", j, fresh_food);
             indexes.push(j);
             add_to_vector(fresh_food, start, end, indexes);
+            break;
         }
         else {
             added = false;
         }
     }
-    if !added{
-        fresh_food.push((first, last));
+    if !added && !fresh_food.contains(&(first,last)){
+        fresh_food.push((first,last));
     }
+    
 }
